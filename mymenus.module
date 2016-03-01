@@ -1,0 +1,27 @@
+<?php
+/**
+ * @file
+ * Mymenus module file.
+ */
+
+/**
+ * Implements hook_block_view_MODULE_DELTA_alter().
+ *
+ * Note that MODULE_DELTA are two separate values obtainable form the 'block'
+ * DB table column values.
+ *
+ * Optional hook implementation that ensures that the menu we define and
+ * configure when this module was installed does not show a title, just the
+ * menu content.
+ *
+ * If we don't give the block a title in the first place, or update its
+ * title after creation to be empty, then the block will be unable to be
+ * identified in the admin screens. So we create it with a title and alter
+ * it here.
+ *
+ * We could take this a step further and make the hiding/showing of the menu
+ * title configurable.
+ */
+function mymenus_block_view_menu_mysite_footer_links_alter(&$data, $block) {
+  $data['subject'] = '';
+}

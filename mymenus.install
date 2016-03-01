@@ -1,0 +1,91 @@
+<?php
+/**
+ * @file
+ * 'Mymenus' module install/uninstall/update tasks.
+ */
+
+/**
+ * Implements hook_install.
+ */
+function mymenus_install() {
+  $menu_name = 'mysite_footer_links';
+
+  if (!menu_load($menu_name)) {
+    $menu = array(
+      'menu_name' => $menu_name,
+      'title' => 'My site footer menu',
+      'description' => 'Terms and conditions etc.',
+    );
+
+    menu_save($menu);
+
+    // Define the menu items themselves. Note that this configuration is to
+    // open each link in a new browser tab/window.
+    $items = array(
+      array(
+        'link_path' => 'https://example.org/terms-and-conditions',
+        'link_title' => 'Terms and conditions',
+        'menu_name' => $menu_name,
+        'options' => array(),
+        'plid' => 0,
+        'external' => 1,
+        'weight' => 10,
+      ),
+      array(
+        'link_path' => 'https://example.org/our-cookie-policy',
+        'link_title' => 'Our cookie policy',
+        'menu_name' => $menu_name,
+        'options' => array(),
+        'plid' => 0,
+        'external' => 1,
+        'weight' => 20,
+      ),
+      array(
+        'link_path' => 'https://example.org/contact-us',
+        'link_title' => 'Contact us',
+        'menu_name' => $menu_name,
+        'options' => array(),
+        'plid' => 0,
+        'external' => 1,
+        'weight' => 30,
+      ),
+    );
+
+    foreach ($items as $item) {
+      menu_link_save($item);
+    }
+
+    // Advised to clear cache after saving menu items.
+    menu_cache_clear_all();
+
+    // Configure the 'mysite_footer_links' menu block to be shown in the footer
+    // region of the current default theme (the theme having a 'footer' region
+    // is a prerequisite!).
+    db_insert('block')
+      ->fields(array(
+        'module' => 'menu',
+        'delta' => $menu_name,
+        'theme' => variable_get('theme_default', 'bartik'),
+        'status' => 1,
+        'weight' => 0,
+        'region' => 'footer',
+        'custom' => 0,
+        'visibility' => 0,
+        'pages' => '',
+        'title' => '',
+        'cache' => -1,
+      ))
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_uninstall.
+ */
+function mymenus_uninstall() {
+  // Remove the menu we added, when the module is uninstalled.
+  $menu = array(
+    'menu_name' => 'mysite_footer_links',
+  );
+  menu_delete($menu);
+}
